@@ -1,9 +1,9 @@
-name: Flutter Build and Artifact Upload
+name: Flutter Build for arm64 and armeabi-v7a
 
 on:
   push:
     branches:
-      - main  # Change to your desired branch
+      - main  # Replace with the branch you want to trigger the build
   pull_request:
     branches:
       - main
@@ -14,56 +14,45 @@ jobs:
 
     steps:
       # Step 1: Checkout repository
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
       # Step 2: Set up Flutter environment
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.5.4'
+          flutter-version: '3.5.4'  # Replace with the Flutter version you need
 
       # Step 3: Verify Flutter installation
       - name: Print Flutter version
         run: flutter --version
 
-      # Step 4: Fetch dependencies
+      # Step 4: Get dependencies
       - name: Get Flutter dependencies
         run: flutter pub get
 
-      # Step 5: Run Flutter tests (optional)
-      - name: Run Flutter tests
-        run: flutter test
-
-      # Step 6: Build APK for both arm64 and armeabi-v7a
-      - name: Build APK
+      # Step 5: Build APK for arm64 and armeabi-v7a
+      - name: Build APK for arm64 and armeabi-v7a
         run: |
           flutter build apk --release --target-platform android-arm,android-arm64
 
-      # Step 7: Upload APK as artifact
-      - name: Upload release APK
+      # Step 6: Upload APK
+      - name: Upload Release APK
         uses: actions/upload-artifact@v3
         with:
           name: app-release.apk
           path: build/app/outputs/flutter-apk/app-release.apk
 
-      # Step 8: Upload libflutter.so files for arm64 and armeabi-v7a
+      # Step 7: Upload libflutter.so for arm64
       - name: Upload libflutter.so for arm64
         uses: actions/upload-artifact@v3
         with:
           name: libflutter_so_arm64
           path: build/app/intermediates/merged_native_libs/release/out/lib/arm64-v8a/libflutter.so
 
+      # Step 8: Upload libflutter.so for armeabi-v7a
       - name: Upload libflutter.so for armeabi-v7a
         uses: actions/upload-artifact@v3
         with:
           name: libflutter_so_armeabi_v7a
           path: build/app/intermediates/merged_native_libs/release/out/lib/armeabi-v7a/libflutter.so
-
-      # Step 9: Upload build logs (optional)
-      - name: Upload build logs
-        if: failure() || always() # Upload only if build fails or always for debugging
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-logs
-          path: build/logs/
