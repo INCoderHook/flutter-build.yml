@@ -3,7 +3,7 @@ name: Flutter Build for arm64 and armeabi-v7a
 on:
   push:
     branches:
-      - main  # Replace with the branch you want to trigger the build
+      - main  # Change this to your target branch
   pull_request:
     branches:
       - main
@@ -21,7 +21,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.5.4'  # Replace with the Flutter version you need
+          flutter-version: '3.5.4'  # Use your desired Flutter version
 
       # Step 3: Verify Flutter installation
       - name: Print Flutter version
@@ -38,4 +38,21 @@ jobs:
 
       # Step 6: Upload Release APK
       - name: Upload Release APK
-        uses:
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      # Step 7: Upload libflutter.so for arm64
+      - name: Upload libflutter.so for arm64
+        uses: actions/upload-artifact@v3
+        with:
+          name: libflutter_so_arm64
+          path: build/app/intermediates/merged_native_libs/release/out/lib/arm64-v8a/libflutter.so
+
+      # Step 8: Upload libflutter.so for armeabi-v7a
+      - name: Upload libflutter.so for armeabi-v7a
+        uses: actions/upload-artifact@v3
+        with:
+          name: libflutter_so_armeabi_v7a
+          path: build/app/intermediates/merged_native_libs/release/out/lib/armeabi-v7a/libflutter.so
